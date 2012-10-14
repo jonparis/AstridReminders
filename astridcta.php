@@ -74,13 +74,7 @@ class AstridCTA {
 		wp_enqueue_style( 'astridcta' );
 	}
 	
-	function remove_quotes($str) {
-		return $str;
-    	//return strtr($str, array("'"  => "&#39;"));
-	}
-	
 	function encodeURIComponent($str) {
-	    //return "awesome";
 	    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
 	    return strtr(rawurlencode($str), $revert);
 	}	

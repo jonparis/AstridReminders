@@ -10,6 +10,7 @@ License: GPLv2
 /* Directories and URLs */
 define( 'ACTA_URL', plugin_dir_url(__FILE__) );
 define( 'ACTA_DIR', plugin_dir_path(__FILE__) );
+define('DEFAULT_REMINDER', 3);
 
 class AstridCTA {
 	static $instance = false;
@@ -32,7 +33,7 @@ class AstridCTA {
 		$prefix = 'acta_';
 
 		$acta_title = '';
-		$acta_title .= 'AstridCTA Options';
+		$acta_title .= 'Suggested reminders';
 		
 		$meta_boxes[] = array(
 			'id' => 'acta-options',
@@ -73,52 +74,28 @@ class AstridCTA {
 		wp_enqueue_style( 'astridcta' );
 	}
 	
+	function remove_quotes($str) {
+		return $str;
+    	//return strtr($str, array("'"  => "&#39;"));
+	}
+	
+	function encodeURIComponent($str) {
+	    //return "awesome";
+	    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
+	    return strtr(rawurlencode($str), $revert);
+	}	
+
 	function render_acta_actions( $field, $meta ) {
 		echo '<ul id="' . $field['id'] . '" name="' . $field['id'] . '">';		
 		if ( $meta && is_array( $meta ) ) {
-			$i = 0;
 			foreach ( $meta as $val ) {
-				echo '
-<li id="acta_actions_' . $i . '" class="acta_action">
-	<div class="acta_action_header">
-	<label for="acta_actions[' . $i . ']">#' . ( $i + 1 ) . '</label>';
-				
-				if ( $i > 0 ) {
-					$visible = 'display: none';
-					if ( ( $i + 1 ) >= count( $meta ) ) {
-						$visible = '';
-					}
-					echo '<a class="acta_remove_action" style="' . $visible . ';" onclick="return removeActaAction(this);">Remove</a>';
-				}
-				
-				echo '
-	</div>
-	<div class="acta_action_field">
-		<label>Action</label>
-		<input type="text" class="acta_action_text" id="acta_actions[' . $i . '][text]" name="acta_actions[' . $i . '][text]" value="' . $val['text'] . '" />
-	</div>	
-	<div class="acta_action_field">
-		<label>Reminder Days</label>
-		<input type="text" class="acta_action_reminder_days" id="acta_actions[' . $i . '][reminder_days]" name="acta_actions[' . $i . '][reminder_days]" value="' . $val['reminder_days'] . '" />
-	</div>
-</li>
-				';
-				$i += 1;
+				echo ('<script>addActaAction("'.
+					self::encodeURIComponent($val['text']).'","'.
+					self::encodeURIComponent($val['notes']).'","'.
+					intval($val['reminder_days']).
+					'");</script>');
 			}
 		} else {
-//			echo '
-//<li id="acta_actions_0" class="acta_action">
-//	<div class="acta_action_header"><label for="acta_actions[0]">#1</label></div>
-//	<div class="acta_action_field">
-//		<label>Action</label>
-//		<input type="text" class="acta_action_text" id="acta_actions[0][text]" name="acta_actions[0][text]" value="" />
-//	</div>	
-//	<div class="acta_action_field">
-//		<label>Reminder Days</label>
-//		<input type="text" class="acta_action_reminder_days" id="acta_actions[0][reminder_days]" name="acta_actions[0][reminder_days]" value="" />
-//	</div>
-//</li>
-//			';
 			echo '<span id="acta_no_actions">Add your first action.</span>';
 		}
 		echo '</ul>';
@@ -141,8 +118,8 @@ function acta_content_footer( $content ) {
 		$actions = get_post_meta( $post->ID, 'acta_actions', true );
 		if ( $actions && is_array( $actions ) && count( $actions ) > 0 ) {
 			$content .= '<div id="acta_actions_fe">';
-			$content .= '<h2>Want a Reminder?</h2>';
-			$content .= '<p>If you use <a href="//astrid.com">Astrid</a>, you can create reminders so that you remember to act on this post.</p>';
+			$content .= '<h2>Don\'t forget!</h2>';
+			$content .= '<p>Get reminders by email or through <a href="http://astrid.com">Astrid</a> for iPhone, iPad, or Android.</p>';
 			$content .= '<ul>';
 			$siteurl = get_site_url();
 			$step = 0; 
@@ -152,13 +129,11 @@ function acta_content_footer( $content ) {
 				$content .= $action['text'];
 				$content .= '&nbsp;&nbsp;';
 				$content .= '<iframe allowtransparency="true" frameborder="0" scrolling="no"height="21px" width="116px" title="Astrid Remind Me"';
-				$content .= 'src="http://astrid.com/widgets/remind_me?title=';
-				$content .= urlencode($action['text']);
-				$content .= '&due_in_days=';
-				$content .= $action['reminder_days'];
-				$content .= '&source_name=ChrisLema';
-				$content .= '&source_url=';
-				$content .= $siteurl;
+				$content .= 'src="http://astrid.com/widgets/remind_me?title=' . urlencode($action['text']);
+				$content .= '&due_in_days=' . $action['reminder_days'];
+				$content .= '&notes='.urlencode($action['notes']);
+				$content .= '&source_name=';
+				$content .= '&source_url='.urlencode(post_permalink());
 				$content .= '&suggester_id=45&button_size=mini&button_style=astrid&button_title=Remind%20me"></iframe>';
 				$content .= '</li>';
 			}

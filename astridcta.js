@@ -8,7 +8,10 @@
  * @copyright Copyright (c)2011 ALL RIGHTS RESERVED
  */
 
-function addActaAction() {
+function addActaAction(text,notes,reminder_days) {
+	var text = text || "";
+	var notes = notes || "";
+	var reminder_days = reminder_days || 3;
 	var next = jQuery('.acta_action').length;
 	
 	jQuery('.acta_remove_action').hide();
@@ -24,13 +27,18 @@ function addActaAction() {
 	
 	html += '</div>';
 	html += '<div class="acta_action_field">';
-	html += '<label>Action</label>';
-	html += '<input type="text" class="acta_action_text" id="acta_actions[' + next + '][text]" name="acta_actions[' + next + '][text]" value="" />';
+	html += '<label>Title</label>';
+	html += '<input type="text" class="acta_action_text" id="acta_actions[' + next + '][text]" name="acta_actions[' + next + '][text]" value="'+ decodeURIComponent(text) + '" />';
 	html += '</div>';
 	html += '<div class="acta_action_field">';
-	html += '<label>Reminder Days</label>';
-	html += '<input type="text" class="acta_action_reminder_days" id="acta_actions[' + next + '][reminder_days]" name="acta_actions[' + next + '][reminder_days]" value="" />';
-	html += '</div>';	
+	html += '<label>Description</label>';
+	html += '<textarea rows="3" class="acta_action_description" id="acta_actions[' + next + '][notes]" name="acta_actions[' + next + '][notes]"';
+	html += ' placeholder="optional instructions to help readers take this action">'+ decodeURIComponent(notes) + '</textarea>';
+	html += '</div>';
+	html += '<div class="acta_action_field">';
+	html += '<label>Send reminder</label>';
+	html += '<input type="text" class="acta_action_reminder_days" id="acta_actions[' + next + '][reminder_days]" name="acta_actions[' + next + '][reminder_days]" value="'+ decodeURIComponent(reminder_days) +'" />';
+	html += ' days after reader clicks</div>';	
 	html += '</li>';
 	
 	jQuery('#acta_actions').append(html);

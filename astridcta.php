@@ -30,9 +30,8 @@ class AstridCTA {
 	
 	function acta_meta_boxes( $meta_boxes ) {
 		$prefix = 'acta_';
-
 		$acta_title = '';
-		$acta_title .= 'Suggested reminders';
+		$acta_title .= 'Suggested Action Reminders';
 		
 		$meta_boxes[] = array(
 			'id' => 'acta-options',
@@ -52,7 +51,13 @@ class AstridCTA {
 					'type' => 'acta_button',
 					'text' => 'Add New Action',
 					'js_action' => 'return addActaAction();'
-				)
+				),
+				array (
+					'id' => $prefix . 'suggest_actions',
+					'type' => 'acta_button',
+					'text' => 'Suggest Actions From Post Content',
+					'js_action' => 'return getTasksFromPost();'
+				),
 			)
 		);
 
@@ -72,7 +77,7 @@ class AstridCTA {
 		wp_register_style( 'astridcta', ACTA_URL . 'astridcta.css' );
 		wp_enqueue_style( 'astridcta' );
 	}
-	
+
 	function encodeURIComponent($str) {
 	    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
 	    return strtr(rawurlencode($str), $revert);
@@ -93,6 +98,20 @@ class AstridCTA {
 		}
 		echo '</ul>';
 	}
+
+	function tags_to_todos ($tag) {
+		$content = get_the_content();
+	    $DOM = new DOMDocument;
+	    $DOM->LoadHTML($content);
+
+	    $items = $DOM.getElementsByTagName('h1');
+
+	    /* post all h1 elements, now you can do the same with getElementsByID to get the id's with that you expect. */
+	    for ($i = 0; $i < $items->length; $i++) {
+	        echo ('<script>addActaAction("'.
+				self::encodeURIComponent($items->item($i)->nodeValue).'","notes",2);</script>');
+	    }
+	}
 	
 	function render_acta_button( $field, $meta ) {
 		echo '<a name="' . $field['id'] . '" id="' . 
@@ -104,7 +123,6 @@ class AstridCTA {
 		return $new;
 	}
 	
-
 	function acta_content_footer( $content ) {
 		global $post;
 		$author_username = get_option("astrid_author_username");
@@ -160,7 +178,8 @@ function get_astrid_cta_option($option) {
     						for iPhone, iPad, or Android.'
 	);
 	$options = get_option('astrid_cta');
-	return $options[$option] ? $options[$option] : $option_default[$option];
+	$option_return = $options[$option] ? $options[$option] : $option_default[$option];
+	return stripslashes($option_return);
 }
 
 // Init plugin options to white list our options
@@ -177,7 +196,7 @@ function astrid_cta_add_page() {
 function astrid_cta_do_page() {
 	?>
 	<div class="wrap">
-		<h2>Astrid Calls To Action</h2>
+		<h2>Astrid Calls-To-Action</h2>
 		<form method="post" action="options.php">
 			<?php settings_fields('astrid_cta_options'); ?>
 		</p>
@@ -201,8 +220,41 @@ function astrid_cta_do_page() {
 function astrid_cta_validate($input) {
 	// Say our second option must be safe text with no HTML tags
 	$input['header'] =  wp_filter_nohtml_kses($input['header']);
-	$input['description'] =  wp_filter_nohtml_kses($input['description']);
+	$input['description'] =  addslashes($input['description']);
 	
 	return $input;
 }
+
+/*** buttons ***/
+
+add_shortcode('astridrm', 'addAstridRM');
+
+
+function add_astrid_reminder_button() {
+   if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+     return;
+   if ( get_user_option('rich_editing') == 'true') {
+     add_filter('mce_external_plugins', 'add_youtube_tinymce_plugin');
+     add_filter('mce_buttons', 'register_youtube_button');
+   }
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('thickbox',null,array('jquery'));
+    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0');
+}
+
+add_action('init', 'add_astrid_reminder_button');
+
+
+
+function register_youtube_button($buttons) {
+   array_push($buttons, "|", "astrid_reminder");
+   return $buttons;
+}
+
+function add_youtube_tinymce_plugin($plugin_array) {
+   $plugin_array['astrid_reminder'] = plugins_url() . '/AstridReminders/editor_plugin.js';
+   return $plugin_array;
+}
+
+
 ?>

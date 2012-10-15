@@ -52,6 +52,18 @@ function addActaAction(text,notes,reminder_days) {
 	return false;
 }
 
+function getTasksFromPost() {
+	var data = jQuery('#content').text();
+	var test = jQuery(data).find('h2');
+	var container = document.createElement('div');
+	container.innerHTML = data;
+	var potential_tasks = jQuery(container).find('h2');
+	jQuery.each(potential_tasks, function(index, value) {
+		console.log(jQuery(value).html());
+		addActaAction(jQuery(value).html(), "", 3);
+	});
+}
+
 function removeActaAction(e) {
 	jQuery(e).closest('li').remove();
 	jQuery('#acta_actions .acta_remove_action:last').show();

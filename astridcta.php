@@ -119,16 +119,16 @@ class AstridCTA {
 				$step = 0; 
 				foreach( $actions as $action ) { 
 					$step += 1;
+					if (!$action['text'])
+						continue;
 					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= $action['text'];
-					$content .= '&nbsp;&nbsp;';
-					$content .= '<iframe allowtransparency="true" frameborder="0" scrolling="no"height="21px" width="116px" title="Astrid Remind Me"';
-					$content .= 'src="http://astrid.com/widgets/remind_me?title=' . urlencode($action['text']);
+					$content .= '<a href="http://astrid.com/new?title=' . urlencode($action['text']);
 					$content .= '&due_in_days=' . $action['reminder_days'];
 					$content .= '&notes='.urlencode($action['notes']);
-					$content .= '&source_name=';
+					$content .= '&source_name='.urlencode(get_the_title());
 					$content .= '&source_url='.urlencode(post_permalink());
-					$content .= '&suggester_id=45&button_size=mini&button_style=astrid&button_title=Remind%20me"></iframe>';
+					$content .= '&suggester_id=45';
+					$content .= '" target="_blank">' . $action['text'] . '</a>';
 					$content .= '</li>';
 				}
 				$content .= '</ul>';

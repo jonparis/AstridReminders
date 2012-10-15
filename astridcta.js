@@ -62,6 +62,8 @@ function getTasksFromPost() {
 		console.log(jQuery(value).html());
 		addActaAction(jQuery(value).html(), "", 3);
 	});
+	if(potential_tasks.length == 0)
+		alert('You have no h2 headers in this post.');
 }
 
 function removeActaAction(e) {

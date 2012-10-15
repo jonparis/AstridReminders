@@ -55,7 +55,7 @@ class AstridCTA {
 				array (
 					'id' => $prefix . 'suggest_actions',
 					'type' => 'acta_button',
-					'text' => 'Suggest Actions From Post Content',
+					'text' => 'Suggest Actions From Post\'s h2 Headers',
 					'js_action' => 'return getTasksFromPost();'
 				),
 			)

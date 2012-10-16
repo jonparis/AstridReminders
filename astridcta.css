@@ -51,6 +51,7 @@ root {
 	display: table-cell;
 }
 
+.acta_action_field textarea.acta_action_description,
 .acta_action_field input[type=text].acta_action_text,
 .acta_action_field input[type=text].acta_action_reminder_days {
 	margin-top: 0;
@@ -69,7 +70,7 @@ root {
 	float: right;
 }
 
-#acta_add_action {
+#acta_add_action, #acta_suggest_actions {
 	display: block;
     text-align: center;
 	margin-right: 20px;

@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: AstridCTA
+Plugin Name: Astrid Call-To-Action Reminders
 Description: A WordPress plugin that lets bloggers create Astrid Calls to Action reminders at the bottom of each post.
 Version: 0.1
 Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) and using Custom Meta Box code from others.
@@ -30,9 +30,8 @@ class AstridCTA {
 	
 	function acta_meta_boxes( $meta_boxes ) {
 		$prefix = 'acta_';
-
 		$acta_title = '';
-		$acta_title .= 'AstridCTA Options';
+		$acta_title .= 'Suggested Action Reminders';
 		
 		$meta_boxes[] = array(
 			'id' => 'acta-options',
@@ -52,7 +51,13 @@ class AstridCTA {
 					'type' => 'acta_button',
 					'text' => 'Add New Action',
 					'js_action' => 'return addActaAction();'
-				)
+				),
+				array (
+					'id' => $prefix . 'suggest_actions',
+					'type' => 'acta_button',
+					'text' => 'Suggest Actions From Post\'s h2 Headers',
+					'js_action' => 'return getTasksFromPost();'
+				),
 			)
 		);
 
@@ -72,56 +77,40 @@ class AstridCTA {
 		wp_register_style( 'astridcta', ACTA_URL . 'astridcta.css' );
 		wp_enqueue_style( 'astridcta' );
 	}
-	
+
+	function encodeURIComponent($str) {
+	    $revert = array('%21'=>'!', '%2A'=>'*', '%27'=>"'", '%28'=>'(', '%29'=>')');
+	    return strtr(rawurlencode($str), $revert);
+	}	
+
 	function render_acta_actions( $field, $meta ) {
 		echo '<ul id="' . $field['id'] . '" name="' . $field['id'] . '">';		
 		if ( $meta && is_array( $meta ) ) {
-			$i = 0;
 			foreach ( $meta as $val ) {
-				echo '
-<li id="acta_actions_' . $i . '" class="acta_action">
-	<div class="acta_action_header">
-	<label for="acta_actions[' . $i . ']">#' . ( $i + 1 ) . '</label>';
-				
-				if ( $i > 0 ) {
-					$visible = 'display: none';
-					if ( ( $i + 1 ) >= count( $meta ) ) {
-						$visible = '';
-					}
-					echo '<a class="acta_remove_action" style="' . $visible . ';" onclick="return removeActaAction(this);">Remove</a>';
-				}
-				
-				echo '
-	</div>
-	<div class="acta_action_field">
-		<label>Action</label>
-		<input type="text" class="acta_action_text" id="acta_actions[' . $i . '][text]" name="acta_actions[' . $i . '][text]" value="' . $val['text'] . '" />
-	</div>	
-	<div class="acta_action_field">
-		<label>Reminder Days</label>
-		<input type="text" class="acta_action_reminder_days" id="acta_actions[' . $i . '][reminder_days]" name="acta_actions[' . $i . '][reminder_days]" value="' . $val['reminder_days'] . '" />
-	</div>
-</li>
-				';
-				$i += 1;
+				echo ('<script>addActaAction("'.
+					self::encodeURIComponent($val['text']).'","'.
+					self::encodeURIComponent($val['notes']).'","'.
+					intval($val['reminder_days']).
+					'");</script>');
 			}
 		} else {
-//			echo '
-//<li id="acta_actions_0" class="acta_action">
-//	<div class="acta_action_header"><label for="acta_actions[0]">#1</label></div>
-//	<div class="acta_action_field">
-//		<label>Action</label>
-//		<input type="text" class="acta_action_text" id="acta_actions[0][text]" name="acta_actions[0][text]" value="" />
-//	</div>	
-//	<div class="acta_action_field">
-//		<label>Reminder Days</label>
-//		<input type="text" class="acta_action_reminder_days" id="acta_actions[0][reminder_days]" name="acta_actions[0][reminder_days]" value="" />
-//	</div>
-//</li>
-//			';
 			echo '<span id="acta_no_actions">Add your first action.</span>';
 		}
 		echo '</ul>';
+	}
+
+	function tags_to_todos ($tag) {
+		$content = get_the_content();
+	    $DOM = new DOMDocument;
+	    $DOM->LoadHTML($content);
+
+	    $items = $DOM.getElementsByTagName('h1');
+
+	    /* post all h1 elements, now you can do the same with getElementsByID to get the id's with that you expect. */
+	    for ($i = 0; $i < $items->length; $i++) {
+	        echo ('<script>addActaAction("'.
+				self::encodeURIComponent($items->item($i)->nodeValue).'","notes",2);</script>');
+	    }
 	}
 	
 	function render_acta_button( $field, $meta ) {
@@ -134,41 +123,39 @@ class AstridCTA {
 		return $new;
 	}
 	
-function acta_content_footer( $content ) {
-	global $post;
-
-	if ( is_singular() && is_main_query() ) {
-		$actions = get_post_meta( $post->ID, 'acta_actions', true );
-		if ( $actions && is_array( $actions ) && count( $actions ) > 0 ) {
-			$content .= '<div id="acta_actions_fe">';
-			$content .= '<h2>Want a Reminder?</h2>';
-			$content .= '<p>If you use <a href="//astrid.com">Astrid</a>, you can create reminders so that you remember to act on this post.</p>';
-			$content .= '<ul>';
-			$siteurl = get_site_url();
-			$step = 0; 
-			foreach( $actions as $action ) { 
-				$step += 1;
-				$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-				$content .= $action['text'];
-				$content .= '&nbsp;&nbsp;';
-				$content .= '<iframe allowtransparency="true" frameborder="0" scrolling="no"height="21px" width="116px" title="Astrid Remind Me"';
-				$content .= 'src="http://astrid.com/widgets/remind_me?title=';
-				$content .= urlencode($action['text']);
-				$content .= '&due_in_days=';
-				$content .= $action['reminder_days'];
-				$content .= '&source_name=ChrisLema';
-				$content .= '&source_url=';
-				$content .= $siteurl;
-				$content .= '&suggester_id=45&button_size=mini&button_style=astrid&button_title=Remind%20me"></iframe>';
-				$content .= '</li>';
+	function acta_content_footer( $content ) {
+		global $post;
+		$author_username = get_option("astrid_author_username");
+		if ( is_singular() && is_main_query() ) {
+			$actions = get_post_meta( $post->ID, 'acta_actions', true );
+			if ( $actions && is_array( $actions ) && count( $actions ) > 0 ) {
+				$content .= '<div id="acta_actions_fe">';
+				$content .= '<h2>' . get_astrid_cta_option('header') . '</h2>';
+				$content .= '<p>' . get_astrid_cta_option('description') .'</p>';
+				$content .= '<ul>';
+				$siteurl = get_site_url();
+				$step = 0; 
+				foreach( $actions as $action ) { 
+					$step += 1;
+					if (!$action['text'])
+						continue;
+					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
+					$content .= '<a href="http://astrid.com/new?title=' . urlencode($action['text']);
+					$content .= '&due_in_days=' . $action['reminder_days'];
+					$content .= '&notes='.urlencode($action['notes']);
+					$content .= '&source_name='.urlencode(get_the_title());
+					$content .= '&source_url='.urlencode(post_permalink());
+					$content .= '&suggester_id=45';
+					$content .= '" target="_blank">' . $action['text'] . '</a>';
+					$content .= '</li>';
+				}
+				$content .= '</ul>';
+				$content .= '</div>';
 			}
-			$content .= '</ul>';
-			$content .= '</div>';
 		}
-	}
 
-	return $content;
-}
+		return $content;
+	}
 	
 	public static function get_instance() {
         if ( !self::$instance ) {
@@ -179,5 +166,95 @@ function acta_content_footer( $content ) {
 }
 
 AstridCTA::get_instance();
+
+/*** Admin Panel ***/
+add_action('admin_init', 'astrid_cta_init' );
+add_action('admin_menu', 'astrid_cta_add_page');
+
+function get_astrid_cta_option($option) {
+	$option_default = array(
+    	"header" => "Don\'t forget!",
+    	"description" => 'Get reminders by email or through <a href="http://astrid.com">Astrid</a> 
+    						for iPhone, iPad, or Android.'
+	);
+	$options = get_option('astrid_cta');
+	$option_return = $options[$option] ? $options[$option] : $option_default[$option];
+	return stripslashes($option_return);
+}
+
+// Init plugin options to white list our options
+function astrid_cta_init(){
+	register_setting( 'astrid_cta_options', 'astrid_cta', 'astrid_cta_validate' );
+}
+
+// Add menu page
+function astrid_cta_add_page() {
+	add_options_page('Astrid Calls To Action', 'Astrid Calls-to-Action', 'manage_options', 'astrid_cta', 'astrid_cta_do_page');
+}
+
+// Draw the menu page itself
+function astrid_cta_do_page() {
+	?>
+	<div class="wrap">
+		<h2>Astrid Calls-To-Action</h2>
+		<form method="post" action="options.php">
+			<?php settings_fields('astrid_cta_options'); ?>
+		</p>
+			<table class="form-table">
+				<tr valign="top"><th scope="row">CTA Header</th>
+					<td><input name="astrid_cta[header]" type="text" value="<?php echo get_astrid_cta_option('header'); ?>" /></td>
+				</tr>
+				<tr valign="top"><th scope="row">Description</th>
+					<td><textarea name="astrid_cta[description]" rows="3"><?php echo get_astrid_cta_option('description'); ?></textarea></td>
+				</tr>
+			</table>
+			<p class="submit">
+			<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
+			</p>
+		</form>
+	</div>
+	<?php	
+}
+
+// Sanitize and validate input. Accepts an array, return a sanitized array.
+function astrid_cta_validate($input) {
+	// Say our second option must be safe text with no HTML tags
+	$input['header'] =  wp_filter_nohtml_kses($input['header']);
+	$input['description'] =  addslashes($input['description']);
+	
+	return $input;
+}
+
+/*** buttons ***/
+
+add_shortcode('astridrm', 'addAstridRM');
+
+
+function add_astrid_reminder_button() {
+   if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+     return;
+   if ( get_user_option('rich_editing') == 'true') {
+     add_filter('mce_external_plugins', 'add_youtube_tinymce_plugin');
+     add_filter('mce_buttons', 'register_youtube_button');
+   }
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('thickbox',null,array('jquery'));
+    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0');
+}
+
+add_action('init', 'add_astrid_reminder_button');
+
+
+
+function register_youtube_button($buttons) {
+   array_push($buttons, "|", "astrid_reminder");
+   return $buttons;
+}
+
+function add_youtube_tinymce_plugin($plugin_array) {
+   $plugin_array['astrid_reminder'] = plugins_url() . '/AstridReminders/editor_plugin.js';
+   return $plugin_array;
+}
+
 
 ?>

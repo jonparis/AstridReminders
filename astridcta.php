@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Astrid Call-To-Action Reminders
-Description: A WordPress plugin that lets bloggers create Astrid Calls to Action reminders at the bottom of each post.
-Version: 0.1
+Description: A WordPress plugin that lets bloggers create Astrid Call-to-Action reminders with-in and at the bottom of each post
+Version: 0.5
 Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) and using Custom Meta Box code from others.
 License: GPLv2
 */
@@ -31,7 +31,8 @@ class AstridCTA {
 	function acta_meta_boxes( $meta_boxes ) {
 		$prefix = 'acta_';
 		$acta_title = '';
-		$acta_title .= 'Suggested Action Reminders';
+		$acta_title .= 'Astrid Reminders: Add Action items from your post ' . 
+					   'so readers can get reminded via email, calendar, or to-do list.';
 		
 		$meta_boxes[] = array(
 			'id' => 'acta-options',
@@ -49,13 +50,13 @@ class AstridCTA {
 				array (
 					'id' => $prefix . 'add_action',
 					'type' => 'acta_button',
-					'text' => 'Add New Action',
+					'text' => '&#x2713; Add New Action',
 					'js_action' => 'return addActaAction();'
 				),
 				array (
 					'id' => $prefix . 'suggest_actions',
 					'type' => 'acta_button',
-					'text' => 'Suggest Actions From Post\'s h2 Headers',
+					'text' => 'Suggest &#x2713; Actions From Post\'s h2 Headers',
 					'js_action' => 'return getTasksFromPost();'
 				),
 			)
@@ -140,13 +141,12 @@ class AstridCTA {
 					if (!$action['text'])
 						continue;
 					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= '<a href="http://astrid.com/new?title=' . urlencode($action['text']);
+					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/tasks/remind_me?title=' . self::encodeURIComponent($action['text']);
 					$content .= '&due_in_days=' . $action['reminder_days'];
-					$content .= '&notes='.urlencode($action['notes']);
-					$content .= '&source_name='.urlencode(get_the_title());
-					$content .= '&source_url='.urlencode(post_permalink());
-					$content .= '&suggester_id=45';
-					$content .= '" target="_blank">' . $action['text'] . '</a>';
+					$content .= '&notes='.self::encodeURIComponent($action['notes']);
+					$content .= '&source_name='.get_the_title();
+					$content .= '&source_url='.post_permalink();
+					$content .= '" target="_blank"><span class="a-chk-span">&#x2713;</span> &#x2713; ' . $action['text'] . '</a>';
 					$content .= '</li>';
 				}
 				$content .= '</ul>';
@@ -197,7 +197,7 @@ function astrid_cta_do_page() {
 	?>
 	<div class="wrap">
 		<h2>Astrid Calls-To-Action</h2>
-		<form method="post" action="options.php">
+		<form method="post" action="">
 			<?php settings_fields('astrid_cta_options'); ?>
 		</p>
 			<table class="form-table">
@@ -225,36 +225,38 @@ function astrid_cta_validate($input) {
 	return $input;
 }
 
-/*** buttons ***/
-
-add_shortcode('astridrm', 'addAstridRM');
-
-
+/*** Add Astrid RM button and style to visual editor to add/preview inline content ***/
 function add_astrid_reminder_button() {
    if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
      return;
    if ( get_user_option('rich_editing') == 'true') {
-     add_filter('mce_external_plugins', 'add_youtube_tinymce_plugin');
-     add_filter('mce_buttons', 'register_youtube_button');
+     add_filter('mce_external_plugins', 'add_astrid_reminder_tinymce_plugin');
+     add_filter('mce_buttons', 'register_astrid_reminder_button');
+     add_filter('mce_css', 'ac_style_for_visual_editor');
    }
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('thickbox',null,array('jquery'));
-    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0');
 }
 
 add_action('init', 'add_astrid_reminder_button');
+add_shortcode('astridrm', 'addAstridRM');
+
+function ac_style_for_visual_editor($url) {
+  return plugins_url() . '/AstridReminders/astridcta.css';
+}
 
 
-
-function register_youtube_button($buttons) {
+function register_astrid_reminder_button($buttons) {
    array_push($buttons, "|", "astrid_reminder");
    return $buttons;
 }
 
-function add_youtube_tinymce_plugin($plugin_array) {
+function add_astrid_reminder_tinymce_plugin($plugin_array) {
    $plugin_array['astrid_reminder'] = plugins_url() . '/AstridReminders/editor_plugin.js';
    return $plugin_array;
 }
 
-
+function plugin_get_version() {
+	$plugin_data = get_plugin_data( __FILE__ );
+	$plugin_version = $plugin_data['Version'];
+	return $plugin_version;
+}
 ?>

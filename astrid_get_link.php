@@ -33,12 +33,12 @@
 		                data: data, 
 		                success: function(data){  
 		                    tinyMCEPopup.execCommand('mceInsertContent',false,
-		                    	'<a href="'+ data.url + '" title="' + url_title + '">'+$("#title").val()+'</b>');
+		                    	'<a class="astrid_reminder_link" href="'+ data.url + '" title="' + url_title + '">'+$("#title").val()+'</b>');
 				        	tinyMCEPopup.close();
 		                },
 		                error : function(data){ 
 		                	tinyMCEPopup.execCommand('mceInsertContent',false,
-		                		'<a href="'+ fallback_url + '" title="' + url_title + '">'+$("#title").val()+'</b>');
+		                		'<a class="astrid_reminder_link" href="'+ fallback_url + '" title="' + url_title + '">'+$("#title").val()+'</b>');
 				        	tinyMCEPopup.close();
 		                }                 
 		            });  

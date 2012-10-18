@@ -225,10 +225,6 @@ function astrid_cta_validate($input) {
 }
 
 /*** buttons ***/
-
-add_shortcode('astridrm', 'addAstridRM');
-
-
 function add_astrid_reminder_button() {
    if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
      return;
@@ -239,8 +235,8 @@ function add_astrid_reminder_button() {
 }
 
 add_action('init', 'add_astrid_reminder_button');
-
-
+add_action('wp_head', 'googleone_add_js');
+add_shortcode('astridrm', 'addAstridRM');
 
 function register_astrid_reminder_button($buttons) {
    array_push($buttons, "|", "astrid_reminder");
@@ -252,7 +248,4 @@ function add_astrid_reminder_tinymce_plugin($plugin_array) {
 
    return $plugin_array;
 }
-
-
-
 ?>

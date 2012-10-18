@@ -44,7 +44,7 @@
 					var button_style = $('input[name=button_style]:checked').val();
 					var button_title = $('#button_title').val();
 
-			        var url = "http://pre.act.fm/widgets/remind_me_link";
+			        var url = "http://astrid.com/widgets/remind_me_link";
 			        var fallback_url = "http://astrid.com/new?title="+ title + "&notes=" + notes + "&due_in_days=" + due_in_days +
 			        					"&source_url=" + source_url + "&source_name=" + source_name;
 			       	var data = { title: title, notes: notes, due_in_days : due_in_days };

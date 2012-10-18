@@ -49,13 +49,13 @@ class AstridCTA {
 				array (
 					'id' => $prefix . 'add_action',
 					'type' => 'acta_button',
-					'text' => 'Add New Action',
+					'text' => '&#x2713; Add New Action',
 					'js_action' => 'return addActaAction();'
 				),
 				array (
 					'id' => $prefix . 'suggest_actions',
 					'type' => 'acta_button',
-					'text' => 'Suggest Actions From Post\'s h2 Headers',
+					'text' => 'Suggest &#x2713; Actions From Post\'s h2 Headers',
 					'js_action' => 'return getTasksFromPost();'
 				),
 			)
@@ -140,12 +140,12 @@ class AstridCTA {
 					if (!$action['text'])
 						continue;
 					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= '<a href="http://astrid.com/new?title=' . urlencode($action['text']);
+					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/new?title=' . urlencode($action['text']);
 					$content .= '&due_in_days=' . $action['reminder_days'];
 					$content .= '&notes='.urlencode($action['notes']);
 					$content .= '&source_name='.urlencode(get_the_title());
 					$content .= '&source_url='.urlencode(post_permalink());
-					$content .= '" target="_blank">' . $action['text'] . '</a>';
+					$content .= '" target="_blank"><span class="a-chk-span">&#x2713;</span> &#x2713; ' . $action['text'] . '</a>';
 					$content .= '</li>';
 				}
 				$content .= '</ul>';
@@ -196,7 +196,7 @@ function astrid_cta_do_page() {
 	?>
 	<div class="wrap">
 		<h2>Astrid Calls-To-Action</h2>
-		<form method="post" action="options.php">
+		<form method="post" action="">
 			<?php settings_fields('astrid_cta_options'); ?>
 		</p>
 			<table class="form-table">

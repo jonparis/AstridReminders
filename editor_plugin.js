@@ -8,9 +8,10 @@
         init : function(ed, url) {
             ed.addCommand('add_link_form', function() {
                 ed.windowManager.open({
+                    title : 'Astrid - "Remind Me" link or button',
                     file : url + '/astrid_get_link.php?source_url=' + encodeURIComponent(astrid_source_url) + '&source_name=' +  encodeURIComponent(astrid_source_title),
                     width : 600 + parseInt(ed.getLang('AstridRemindMe.delta_width', 0)),
-                    height : 450 + parseInt(ed.getLang('AstridRemindMe.delta_height', 0)),
+                    height : 520 + parseInt(ed.getLang('AstridRemindMe.delta_height', 0)),
                     inline : 1
                 }, {
                     plugin_url : url

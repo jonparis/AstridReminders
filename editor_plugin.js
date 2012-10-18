@@ -1,12 +1,19 @@
 
 (function() {
-    var astrid_source_title = document.getElementById('title').value;
-    var astrid_source_url = ""
-    if(document.getElementById('sample-permalink') != null)
-        astrid_source_url =  document.getElementById('sample-permalink').innerHTML;
     tinymce.create('tinymce.plugins.AstridRemindMe', {
         init : function(ed, url) {
             ed.addCommand('add_link_form', function() {
+                var astrid_source_title = jQuery('#title').val();
+                var astrid_source_url = "";
+                jQuery("#view-post-btn > a").attr("href")
+                if(jQuery("#view-post-btn > a") && jQuery("#view-post-btn > a").attr("href") != null)
+                    astrid_source_url =  jQuery("#view-post-btn > a").attr("href");
+                else if (jQuery("#referredby") && jQuery("#post_ID")){
+                    var post_id = jQuery("#post_ID").val();
+                    var referredby = jQuery("#referredby").val();
+                    var until_str =  referredby.indexOf("/wp-admin");
+                    var astrid_source_url = referredby.substring(0, until_str) + "?p=" + post_id;
+                }
                 ed.windowManager.open({
                     title : 'Astrid - "Remind Me" link or button',
                     file : url + '/astrid_get_link.php?source_url=' + encodeURIComponent(astrid_source_url) + '&source_name=' +  encodeURIComponent(astrid_source_title),

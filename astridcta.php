@@ -145,7 +145,6 @@ class AstridCTA {
 					$content .= '&notes='.urlencode($action['notes']);
 					$content .= '&source_name='.urlencode(get_the_title());
 					$content .= '&source_url='.urlencode(post_permalink());
-					$content .= '&suggester_id=45';
 					$content .= '" target="_blank">' . $action['text'] . '</a>';
 					$content .= '</li>';
 				}
@@ -234,27 +233,26 @@ function add_astrid_reminder_button() {
    if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
      return;
    if ( get_user_option('rich_editing') == 'true') {
-     add_filter('mce_external_plugins', 'add_youtube_tinymce_plugin');
-     add_filter('mce_buttons', 'register_youtube_button');
+     add_filter('mce_external_plugins', 'add_astrid_reminder_tinymce_plugin');
+     add_filter('mce_buttons', 'register_astrid_reminder_button');
    }
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('thickbox',null,array('jquery'));
-    wp_enqueue_style('thickbox.css', '/'.WPINC.'/js/thickbox/thickbox.css', null, '1.0');
 }
 
 add_action('init', 'add_astrid_reminder_button');
 
 
 
-function register_youtube_button($buttons) {
+function register_astrid_reminder_button($buttons) {
    array_push($buttons, "|", "astrid_reminder");
    return $buttons;
 }
 
-function add_youtube_tinymce_plugin($plugin_array) {
+function add_astrid_reminder_tinymce_plugin($plugin_array) {
    $plugin_array['astrid_reminder'] = plugins_url() . '/AstridReminders/editor_plugin.js';
+
    return $plugin_array;
 }
+
 
 
 ?>

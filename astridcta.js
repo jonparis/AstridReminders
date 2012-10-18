@@ -74,3 +74,15 @@ function removeActaAction(e) {
 	}
 	return false;
 }
+
+function astrid_rm_link_small_window(){
+	jQuery(".astrid-rm-link").onclick = function() {
+    var DEFAULT_POPUP_WIDTH = 600;
+    var DEFAULT_POPUP_HEIGHT = 535;
+
+    var l = window.screenX + (window.outerWidth - DEFAULT_POPUP_WIDTH) / 2;
+    var t = window.screenY + (window.outerHeight - DEFAULT_POPUP_HEIGHT) / 3;
+    window.open(this.href, "_blank", "width="+DEFAULT_POPUP_WIDTH+", height="+DEFAULT_POPUP_HEIGHT+", top="+t+", left="+l+", toolbar=1, resizable=0");
+    return false;
+  }
+}

@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 	<head>
+		<?php
+			function decodeURIComponent($str) {
+				$revert = array('!'=>'%21', '*'=>'%2A', "'"=>'%27', '('=>'%28', ')'=>'%29');
+				return rawurldecode(strtr($str, $revert));
+			}
+		?>
 		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" />
 		<link rel="stylesheet" type="text/css" href="astridcta.css" />
 		<style>
@@ -65,6 +71,7 @@
 		                success: function(data){  
 		                    tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(data.url));
 				        	tinyMCEPopup.close();
+				        	
 		                },
 		                error : function(data){ 
 		                	tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(fallback_url));
@@ -88,7 +95,7 @@
 			<div class="control-group">
 				<label class="control-label" for="title" title="Title is required">Reminder title</label>
 				<div class="controls">
-					<input id="title" name="title" placeholder="Name of the reminder" type="text" value="">
+					<input id="title" name="title" placeholder="Name of the reminder" type="text" value="<?php echo str_replace('"', '&quot;', decodeURIComponent($_GET['selection'])); ?>">
 					(required)
 				</div>
 			</div>

@@ -31,7 +31,8 @@ class AstridCTA {
 	function acta_meta_boxes( $meta_boxes ) {
 		$prefix = 'acta_';
 		$acta_title = '';
-		$acta_title .= 'Suggested Action Reminders';
+		$acta_title .= 'Astrid Reminders: Add Action items from your post ' . 
+					   'so readers can get reminded via email, calendar, or to-do list.';
 		
 		$meta_boxes[] = array(
 			'id' => 'acta-options',

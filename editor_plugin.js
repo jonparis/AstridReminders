@@ -1,3 +1,12 @@
+/**
+ * AstridCTA JS
+ *
+ * PHP version 5
+ * 
+ * @package   AstridCTA
+ * @author    Chris Lema (cflema@gmail.com) and Justin Kussow (jdkussow@gmail.com)
+ * @copyright Copyright (c)2011 ALL RIGHTS RESERVED
+ */
 
 (function() {
     tinymce.create('tinymce.plugins.AstridRemindMe', {
@@ -5,6 +14,7 @@
             ed.addCommand('add_link_form', function() {
                 var astrid_source_title = jQuery('#title').val();
                 var astrid_source_url = "";
+                var site_name = jQuery('#wp-admin-bar-site-name > a').html();
                 jQuery("#view-post-btn > a").attr("href")
                 var selection = tinyMCE.activeEditor.selection.getContent();
                 if(jQuery("#view-post-btn > a") && jQuery("#view-post-btn > a").attr("href") != null)
@@ -17,9 +27,10 @@
                 }
                 ed.windowManager.open({
                     title : 'Astrid - "Remind Me" link or button',
-                    file : url + '/astrid_get_link.php?source_url=' + encodeURIComponent(astrid_source_url) + 
-                                '&source_name=' +  encodeURIComponent(astrid_source_title) +
-                                '&selection=' + encodeURIComponent(selection),
+                    file : url + '/astrid_get_link.php?ar_source_url=' + encodeURIComponent(astrid_source_url) + 
+                                '&ar_source_name=' +  encodeURIComponent(astrid_source_title) +
+                                '&ar_text_selection=' + encodeURIComponent(selection)+
+                                '&ar_site_name=' + encodeURIComponent(site_name),
                     width : 600 + parseInt(ed.getLang('AstridRemindMe.delta_width', 0)),
                     height : 520 + parseInt(ed.getLang('AstridRemindMe.delta_height', 0)),
                     inline : 1
@@ -29,7 +40,7 @@
             });
 
             ed.addButton('astrid_reminder', {
-                title : 'astrid_reminder.astrid_remind_me',
+                title : 'Create a "remind me" link to create action item reminders',
                 image : url+'/images/astrid_32.png',
                 cmd : 'add_link_form'
             });

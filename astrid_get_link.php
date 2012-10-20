@@ -1,18 +1,28 @@
-<!DOCTYPE html>
+<?php
+/*
+Plugin Name: Astrid Call-To-Action Reminders
+Description: A WordPress plugin that lets bloggers create Astrid Calls to Action reminders at the bottom of each post.
+Version: 0.3
+Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) and using Custom Meta Box code from others.
+License: GPLv2
+*/
+
+function decodeURIComponent($str) {
+	$revert = array('!'=>'%21', '*'=>'%2A', "'"=>'%27', '('=>'%28', ')'=>'%29');
+	return rawurldecode(strtr($str, $revert));
+}
+/* create localvariable from get variables */
+foreach ($_GET as $key => $value)
+	$$key = str_replace('"', '&quot;', decodeURIComponent($value));		
+
+?><!DOCTYPE html>
 	<head>
-		<?php
-			function decodeURIComponent($str) {
-				$revert = array('!'=>'%21', '*'=>'%2A', "'"=>'%27', '('=>'%28', ')'=>'%29');
-				return rawurldecode(strtr($str, $revert));
-			}
-		?>
 		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" />
 		<link rel="stylesheet" type="text/css" href="astridcta.css" />
 		<style>
 			#due_in_days { width: 20px }
 			a.learn-more:link, a.link  { color: #08c}
 		    #created_task_link{ word-wrap:break-word; }
-		    #notes { height:70px }
 		    #task_fields.form-horizontal .control-group::before, .form-horizontal .control-group::after { display: inline; }
 		    body.static .main-center #task_fields input { text-align: left }
 		    .control-hint { width: 180px; margin-left: 10px; font-size: 13px; display: inline-block }
@@ -23,94 +33,42 @@
 		    .button-style label.inline img { border:none; width:24px; margin:0 }
 		    .button-size label.inline { vertical-align:top }
 		    .button-size label.inline input[type="radio"] { margin:0 auto;width:30px }
+		   	#ar_notes { height:70px }
+		    #ar_title, #ar_notes { width: 330px }
 		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 		<script type="text/javascript" src="astridcta.js"></script>
-
-		<script>
-			var toggle_button_format = function(){
-    			$(".button-style-controls").toggle();
-  			}
-			var AstridLink = {
-			    e: '',
-			    init: function(e) {
-			        AstridLink.e = e;
-			        tinyMCEPopup.resizeToInnerSize();
-			    },
-			    insert: function createGalleryShortcode(e) {
-			        //Create gallery Shortcode
-			        var title = encodeURIComponent($('#title').val());
-			        var notes = encodeURIComponent($('#notes').val());
-			        var source_url = $('#source_url').val();
-			        var source_name = $('#source_name').val();
-			        var due_in_days = encodeURIComponent($('#due_in_days').val());
-					var use_button = $('input[name=link_or_button]:checked').val() == "button";
-					var button_size = $('input[name=button_size]:checked').val();
-					var button_style = $('input[name=button_style]:checked').val();
-					var button_title = $('#button_title').val();
-
-			        var url = "http://astrid.com/widgets/remind_me_link";
-			        var fallback_url = "http://astrid.com/new?title="+ title + "&notes=" + notes + "&due_in_days=" + due_in_days +
-			        					"&source_url=" + source_url + "&source_name=" + source_name;
-			       	var data = { title: title, notes: notes, due_in_days : due_in_days };
-			       	var url_title = "get reminder via email, calendar or, to-do list";
-			       	var link_class = "astrid-reminder-link";
-
-			       	var display_title = use_button ? '<span class="a-chk-span">&#x2713;</span>' + button_title : "&#x2713; " + $("#title").val();
-			       	if (use_button)
-			       		link_class += " astrid-rm-btn " + button_size + " " + button_style
-
-			       	function construct_link(href) {
-			       		return '<a class="'+ link_class + '" href="'+ href + '" title="' + url_title + '">' + display_title + '</a>';
-			       	}
-					jQuery.ajax({               
-		                type: "POST",
-		                url: url,
-		                data: data, 
-		                success: function(data){  
-		                    tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(data.url));
-				        	tinyMCEPopup.close();
-				        	
-		                },
-		                error : function(data){ 
-		                	tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(fallback_url));
-				        	tinyMCEPopup.close();
-		                }                 
-		            });  
-			    }
-			}
-			tinyMCEPopup.onInit.add(AstridLink.init, AstridLink);   
-		</script>
+		<script type="text/javascript" src="astrid_get_link.js?5"></script>
 	</head>
 
 <body>
-	<h3>
-		Add "Remind Me" Link
-	</h3>
+	<h3>Add "Remind Me" Link</h3>
 	<form action="" method="post" name="get_link_form" id="get_link_form">
-		<input type="hidden" value = "<?php echo $_GET['source_url']; ?>" id="source_url" name="source_url"/>
-		<input type="hidden" value = "<?php echo $_GET['source_name']; ?>" id="source_name" name="source_name" />
+		<input type="hidden" value = "<?php echo $ar_source_url ?>" id="ar_source_url" name="source_url"/>
+		<input type="hidden" value = "<?php echo $ar_source_name; ?>" id="ar_source_name" name="source_name" />
+		<input type="hidden" value = "<?php echo $ar_site_name; ?>" id="ar_site_name" name="site_name" />
+		<input type="hidden" value = "<?php echo $ar_text_selection; ?>" id="ar_text_selection" name="ar_text_selection" />
 		<div class="form-horizontal" id="task_fields">
 			<div class="control-group">
-				<label class="control-label" for="title" title="Title is required">Reminder title</label>
+				<label class="control-label" for="ar_title" title="Title is required">Reminder</label>
 				<div class="controls">
-					<input id="title" name="title" placeholder="Name of the reminder" type="text" value="<?php echo str_replace('"', '&quot;', decodeURIComponent($_GET['selection'])); ?>">
+					<input id="ar_title" name="ar_title" placeholder="eg Update LinkedIn profile with tips from <?php echo $ar_site_name; ?>" type="text" value="<?php echo $ar_text_selection; ?>">
 					(required)
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="notes">Description</label>
 				<div class="controls">
-					<textarea id="notes" name="notes" placeholder="Longer description with additional instruction"></textarea>
+					<textarea id="ar_notes" rows="3" name="notes" placeholder="Longer description with additional instruction"></textarea>
 				</div>
 			</div>
 			<div class="control-group" id="relative_date">
 				<label class="control-label" for="due_in_days">Send reminder</label>
 				<div class="controls input-append thin-input" style="margin-left: 20px;">
-					<input id="due_in_days" name="due_in_days" type="text" value="2">
+					<input id="ar_due_in_days" name="due_in_days" type="text" value="2">
 					<div class="add-on">
-						days after added
+						days after added by user
 					</div>
 					<a href="javascript:;" onclick="toggle_date_picker()" style="font-size:13px" class="help-inline hide">remind on specific date instead</a>
 				</div>
@@ -208,14 +166,14 @@
 				</div>
 			</div>
 			<div class="control-group button-style-controls hide">
-				<label class="control-label" for="button_title">Button text</label>
+				<label class="control-label" for="ar_button_title">Button text</label>
 				<div class="controls">
-					<input id="button_title" name="button_title" type="text" value="Remind me">
+					<input id="ar_button_title" name="ar_button_title" type="text" value="Remind me">
 				</div>
 			</div>
 			<div class="control-group">
 				<div class="controls">
-					<a href="javascript:;" class="btn btn-primary" style="color:white" onclick="AstridLink.insert(AstridLink.e)">Add Remind Me link</a>
+					<a href="javascript:;" class="btn btn-primary" style="color:white" onclick="AstridLink.insert(AstridLink.e)">Add to Post</a>
 				</div>
 			</div>
 		</div>

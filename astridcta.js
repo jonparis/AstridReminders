@@ -19,7 +19,7 @@ function addActaAction(text,notes,reminder_days) {
 	var html = '';
 	html += '<li id="acta_actions_' + next + '" class="acta_action">';
 	html += '<div class="acta_action_header">';
-	html += '<label for="acta_actions[' + next + ']">#' + (next + 1) + '</label>';
+	html += '<label for="acta_actions[' + next + ']">Action Item</label>';
 	
 	if (next > 0) {
 		html += '<a class="acta_remove_action" onclick="return removeActaAction(this);">Remove</a>';
@@ -27,8 +27,9 @@ function addActaAction(text,notes,reminder_days) {
 	
 	html += '</div>';
 	html += '<div class="acta_action_field">';
-	html += '<label>Title</label>';
-	html += '<input type="text" class="acta_action_text" id="acta_actions[' + next + '][text]" name="acta_actions[' + next + '][text]" value="'+ decodeURIComponent(text) + '" />';
+	html += '<label>Reminder</label>';
+	html += '<input type="text" class="acta_action_text" id="acta_actions[' + next + '][text]" name="acta_actions[' 
+	html += next + '][text]" value="'+ decodeURIComponent(text) + '" placeholder="Check '+ jQuery("#wp-admin-bar-site-name > a").html() + ' in 3 days to see if I won" />';
 	html += '</div>';
 	html += '<div class="acta_action_field">';
 	html += '<label>Description</label>';
@@ -38,7 +39,7 @@ function addActaAction(text,notes,reminder_days) {
 	html += '<div class="acta_action_field">';
 	html += '<label>Send reminder</label>';
 	html += '<input type="text" class="acta_action_reminder_days" id="acta_actions[' + next + '][reminder_days]" name="acta_actions[' + next + '][reminder_days]" value="'+ decodeURIComponent(reminder_days) +'" />';
-	html += ' days after reader clicks</div>';	
+	html += ' days after added by user</div>';	
 	html += '</li>';
 	
 	jQuery('#acta_actions').append(html);
@@ -59,7 +60,6 @@ function getTasksFromPost() {
 	container.innerHTML = data;
 	var potential_tasks = jQuery(container).find('h2');
 	jQuery.each(potential_tasks, function(index, value) {
-		console.log(jQuery(value).html());
 		addActaAction(jQuery(value).html(), "", 3);
 	});
 	if(potential_tasks.length == 0)

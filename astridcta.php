@@ -2,7 +2,7 @@
 /*
 Plugin Name: Astrid Call-To-Action Reminders
 Description: A WordPress plugin that lets bloggers create Astrid Calls to Action reminders at the bottom of each post.
-Version: 0.3
+Version: 0.4
 Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) and using Custom Meta Box code from others.
 License: GPLv2
 */

@@ -39,16 +39,73 @@ foreach ($_GET as $key => $value)
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 		<script type="text/javascript" src="astridcta.js"></script>
-		<script type="text/javascript" src="astrid_get_link.js?5"></script>
+		<script type="text/javascript">
+			var AstridLink = {
+			  e: '',
+			  init: function(e) {
+			      AstridLink.e = e;
+			      tinyMCEPopup.resizeToInnerSize();
+			  },
+			  insert: function create_reminder_link(e) {
+			    
+			    var ar = {};
+			    var ar_fields = ["title", "notes", "due_in_days", "button_title"];			  
+			    for (var i = 0; i < ar_fields.length; i++)
+			      ar[ar_fields[i]] = encodeURIComponent($('#ar_' + ar_fields[i]).val());
+
+			  	/* Get site parameters from get variables */
+				ar.source_url = "<?php echo $ar_source_url; ?>";
+				ar.source_name = "<?php echo $ar_source_name; ?>";
+				ar.site_name = "<?php echo $ar_site_name; ?>";
+				ar.source_name = (ar.source_name) ? ar_source_name : ar.site_name;
+				ar.text_selection = "<?php echo $ar_text_selection; ?>";
+
+				/* Button and link title */
+			    var use_button = $('input[name=link_or_button]:checked').val() == "button";
+				var button_size = $('input[name=ar_button_size]:checked').val();
+				var button_style = $('input[name=ar_button_style]:checked').val();
+			    var link_title = (ar.text_selection == "") ? $('#ar_title').val() : ar.text_selection;
+			   	var link_class = "astrid-reminder-link";
+			   	link_class += (use_button) ? " astrid-rm-btn " + button_size + " " + button_style : "";
+			    var display_title = (use_button) ? '<span class="a-chk-span">&#x2713;</span>' + $('#ar_button_title').val() : "&#x2713; " + link_title;
+
+			    
+			    function construct_link(href) {
+			   		return '<a class="astrid-reminder-link"' + ' href="'+ href + '" title="get reminder via email, calendar or, to-do list"' + 
+			              '">' + display_title + '</a>';
+			   	}
+
+			    var url_suffix = "?title=" + ar.title + "&notes=" + ar.notes + "&due_in_days=" + ar.due_in_days +
+			              "&source_url=" + ar.source_url + "&source_name=" + ar.source_name;
+			    jQuery.ajax({               
+			      type: "POST",
+			      url: "http://astrid.com/widgets/remind_me_link" + url_suffix,
+			      data: {}, 
+			      success: function(data){  
+			        tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(data.url));
+			    	  tinyMCEPopup.close();
+			    	
+			      },
+			      error : function(data){ 
+			        var fallback_url = "http://astrid.com/new?title=" + url_suffix;
+			      	tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(fallback_url));
+			    	  tinyMCEPopup.close();
+			      }                 
+			    });  
+			  },
+			  toggle_button_format: function () {
+				$(".button-style-controls").toggle();
+			  }
+			}
+
+			tinyMCEPopup.onInit.add(AstridLink.init, AstridLink);  
+
+		</script>
 	</head>
 
 <body>
 	<h3>Add "Remind Me" Link</h3>
 	<form action="" method="post" name="get_link_form" id="get_link_form">
-		<input type="hidden" value = "<?php echo $ar_source_url ?>" id="ar_source_url" name="source_url"/>
-		<input type="hidden" value = "<?php echo $ar_source_name; ?>" id="ar_source_name" name="source_name" />
-		<input type="hidden" value = "<?php echo $ar_site_name; ?>" id="ar_site_name" name="site_name" />
-		<input type="hidden" value = "<?php echo $ar_text_selection; ?>" id="ar_text_selection" name="ar_text_selection" />
 		<div class="form-horizontal" id="task_fields">
 			<div class="control-group">
 				<label class="control-label" for="ar_title" title="Title is required">Reminder</label>
@@ -85,13 +142,13 @@ foreach ($_GET as $key => $value)
 			<div class="control-group link-or-button-controls">
 				<label class="control-label inline" for="link_or_button">Link or Button</label>
 				<div class="controls">
-					<div class="link-or-button" onclick="toggle_button_format()">
+					<div class="link-or-button" onclick="AstridLink.toggle_button_format()">
 						<label class="inline radio">
 							<input checked="checked" id="link_or_button_link" name="link_or_button" type="radio" value="link">
 								link
 						</label>
 					</div>
-					<div class="link-or-button" onclick="toggle_button_format()">
+					<div class="link-or-button" onclick="AstridLink.toggle_button_format()">
 						<label class="inline radio" style="margin-left:30px">
 							<input id="link_or_button_button" name="link_or_button" type="radio" value="button">
 								button

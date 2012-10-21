@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Astrid Call-To-Action Reminders
-Description: A WordPress plugin that lets bloggers create Astrid Calls to Action reminders at the bottom of each post.
-Version: 0.3
-Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) and using Custom Meta Box code from others.
+Description: A WordPress plugin that lets bloggers create Astrid Call-to-Action reminders with-in and at the bottom of each post
+Version: 0.4
+Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) using Custom Meta Box code from others.
 License: GPLv2
 */
 
@@ -12,33 +12,21 @@ function decodeURIComponent($str) {
 	return rawurldecode(strtr($str, $revert));
 }
 /* create localvariable from get variables */
-foreach ($_GET as $key => $value)
-	$$key = str_replace('"', '&quot;', decodeURIComponent($value));		
+foreach ($_GET as $key => $value){
+	$arr_test = array("ar_source_name", "ar_site_title", "ar_source_url");
+	if (in_array($key, $arr_test))
+		$$key = str_replace('"', '\\"', $value);
+	else
+		$$key = str_replace('"', '&quot;', decodeURIComponent($value));
+}
 
 ?><!DOCTYPE html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" />
 		<link rel="stylesheet" type="text/css" href="astridcta.css" />
-		<style>
-			#due_in_days { width: 20px }
-			a.learn-more:link, a.link  { color: #08c}
-		    #created_task_link{ word-wrap:break-word; }
-		    #task_fields.form-horizontal .control-group::before, .form-horizontal .control-group::after { display: inline; }
-		    body.static .main-center #task_fields input { text-align: left }
-		    .control-hint { width: 180px; margin-left: 10px; font-size: 13px; display: inline-block }
-		    .control-hint h4 { margin-top: 20px; margin-bottom: 10px}
-		    .k-widget.k-datepicker.k-header { width: 215px }
-		    .button-size, .button-style, .link-or-button { display:inline }
-		    .button-style label.inline { white-space:nowrap; padding-right: 30px }
-		    .button-style label.inline img { border:none; width:24px; margin:0 }
-		    .button-size label.inline { vertical-align:top }
-		    .button-size label.inline input[type="radio"] { margin:0 auto;width:30px }
-		   	#ar_notes { height:70px }
-		    #ar_title, #ar_notes { width: 330px }
-		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
-		<script type="text/javascript" src="astridcta.js"></script>
+		<script type="text/javascript" src="astridcta.js?1"></script>
 		<script type="text/javascript">
 			var AstridLink = {
 			  e: '',
@@ -47,17 +35,16 @@ foreach ($_GET as $key => $value)
 			      tinyMCEPopup.resizeToInnerSize();
 			  },
 			  insert: function create_reminder_link(e) {
-			    
 			    var ar = {};
 			    var ar_fields = ["title", "notes", "due_in_days", "button_title"];			  
 			    for (var i = 0; i < ar_fields.length; i++)
 			      ar[ar_fields[i]] = encodeURIComponent($('#ar_' + ar_fields[i]).val());
 
 			  	/* Get site parameters from get variables */
-				ar.source_url = "<?php echo $ar_source_url; ?>";
-				ar.source_name = "<?php echo $ar_source_name; ?>";
-				ar.site_name = "<?php echo $ar_site_name; ?>";
-				ar.source_name = (ar.source_name) ? ar_source_name : ar.site_name;
+				ar.source_url = encodeURIComponent("<?php echo $ar_source_url; ?>");
+				ar.source_name = encodeURIComponent("<?php echo $ar_source_name; ?>");
+				ar.site_name = encodeURIComponent("<?php echo $ar_site_name; ?>");
+				ar.source_name = (ar.source_name) ? ar.source_name : ar.site_name;
 				ar.text_selection = "<?php echo $ar_text_selection; ?>";
 
 				/* Button and link title */
@@ -65,11 +52,9 @@ foreach ($_GET as $key => $value)
 				var button_size = $('input[name=ar_button_size]:checked').val();
 				var button_style = $('input[name=ar_button_style]:checked').val();
 			    var link_title = (ar.text_selection == "") ? $('#ar_title').val() : ar.text_selection;
-			   	var link_class = "astrid-reminder-link";
-			   	link_class += (use_button) ? " astrid-rm-btn " + button_size + " " + button_style : "";
+			   	var link_class = (use_button) ? "astrid-reminder-link astrid-rm-btn " + button_size + " " + button_style : "astrid-reminder-link";
 			    var display_title = (use_button) ? '<span class="a-chk-span">&#x2713;</span>' + $('#ar_button_title').val() : "&#x2713; " + link_title;
 
-			    
 			    function construct_link(href) {
 			   		return '<a class="astrid-reminder-link"' + ' href="'+ href + '" title="get reminder via email, calendar or, to-do list"' + 
 			              '">' + display_title + '</a>';
@@ -77,11 +62,13 @@ foreach ($_GET as $key => $value)
 
 			    var url_suffix = "?title=" + ar.title + "&notes=" + ar.notes + "&due_in_days=" + ar.due_in_days +
 			              "&source_url=" + ar.source_url + "&source_name=" + ar.source_name;
+			    console.log(url_suffix);
 			    jQuery.ajax({               
 			      type: "POST",
 			      url: "http://astrid.com/widgets/remind_me_link" + url_suffix,
 			      data: {}, 
 			      success: function(data){  
+			      	console
 			        tinyMCEPopup.execCommand('mceInsertContent',false, construct_link(data.url));
 			    	  tinyMCEPopup.close();
 			    	
@@ -103,7 +90,7 @@ foreach ($_GET as $key => $value)
 		</script>
 	</head>
 
-<body>
+<body class="a_gl_page">
 	<h3>Add "Remind Me" Link</h3>
 	<form action="" method="post" name="get_link_form" id="get_link_form">
 		<div class="form-horizontal" id="task_fields">
@@ -127,7 +114,7 @@ foreach ($_GET as $key => $value)
 					<div class="add-on">
 						days after added by user
 					</div>
-					<a href="javascript:;" onclick="toggle_date_picker()" style="font-size:13px" class="help-inline hide">remind on specific date instead</a>
+					<a href="javascript:;" onclick="AstridLink.toggle_date_picker()" style="font-size:13px" class="help-inline">remind on specific date instead</a>
 				</div>
 			</div>
 			<div class="control-group hide" id="specific_date">
@@ -135,7 +122,7 @@ foreach ($_GET as $key => $value)
 				<div class="controls">
 					<input id="date_picker" name="due_date" placeholder="yyyy-mm-dd" type="text" value="">
 					<div class="control-hint">
-						<a href="javascript:;" onclick="toggle_date_picker()">remind x days after added</a>
+						<a href="javascript:;" onclick="AstridLink.toggle_date_picker()">remind x days after added</a>
 					</div>
 				</div>
 			</div>

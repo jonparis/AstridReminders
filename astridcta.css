@@ -264,3 +264,16 @@ root {
 .astrid-rm-btn.a-small.a-chk .a-chk-span { font-size:18px; width: 18px; display:block }
 .astrid-rm-btn.a-icn.a-large { padding-left:45px; background-image: url('images/astrid_btn_large.png'); background-position: 4px 2px  }
 .astrid-rm-btn.a-large.a-chk .a-chk-span { font-size:22px; margin-top:-4px; width: 22px; display:block }
+
+/* Astrid Get-Link page */
+.a_gl_page #ar_due_in_days { width: 20px }
+.a_gl_page a.learn-more:link, a.link  { color: #08c}
+.a_gl_page .control-hint { width: 180px; margin-left: 10px; font-size: 13px; display: inline-block }
+.a_gl_page .control-hint h4 { margin-top: 20px; margin-bottom: 10px}
+.a_gl_page .button-size, .a_gl_page .button-style, .a_gl_page .link-or-button { display:inline }
+.a_gl_page .button-style label.inline { white-space:nowrap; padding-right: 30px }
+.a_gl_page .button-style label.inline img { border:none; width:24px; margin:0 }
+.a_gl_page .button-size label.inline { vertical-align:top }
+.a_gl_page .button-size label.inline input[type="radio"] { margin:0 auto;width:30px }
+.a_gl_page #ar_notes { height:70px }
+.a_gl_page #ar_title, .a_gl_page #ar_notes { width: 330px }

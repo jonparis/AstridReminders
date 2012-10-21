@@ -141,11 +141,11 @@ class AstridCTA {
 					if (!$action['text'])
 						continue;
 					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/new?title=' . urlencode($action['text']);
+					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/new?title=' . self::encodeURIComponent($action['text']);
 					$content .= '&due_in_days=' . $action['reminder_days'];
-					$content .= '&notes='.urlencode($action['notes']);
-					$content .= '&source_name='.urlencode(get_the_title());
-					$content .= '&source_url='.urlencode(post_permalink());
+					$content .= '&notes='.self::encodeURIComponent($action['notes']);
+					$content .= '&source_name='.get_the_title();
+					$content .= '&source_url='.post_permalink();
 					$content .= '" target="_blank"><span class="a-chk-span">&#x2713;</span> &#x2713; ' . $action['text'] . '</a>';
 					$content .= '</li>';
 				}

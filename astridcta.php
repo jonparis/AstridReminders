@@ -52,13 +52,7 @@ class AstridCTA {
 					'type' => 'acta_button',
 					'text' => '&#x2713; Add New Action',
 					'js_action' => 'return addActaAction();'
-				),
-				array (
-					'id' => $prefix . 'suggest_actions',
-					'type' => 'acta_button',
-					'text' => 'Suggest &#x2713; Actions From Post\'s h2 Headers',
-					'js_action' => 'return getTasksFromPost();'
-				),
+				)
 			)
 		);
 

@@ -26,7 +26,7 @@
                 }
                 ed.windowManager.open({
                     title : 'Astrid - "Remind Me" link or button',
-                    file : url + '/astrid_get_link.php?ar_source_url=' + encodeURIComponent(astrid_source_url) + 
+                    file : url + '/link_editor/astrid_get_link.php?ar_source_url=' + encodeURIComponent(astrid_source_url) + 
                                 '&ar_source_name=' +  encodeURIComponent(astrid_source_title) +
                                 '&ar_text_selection=' + encodeURIComponent(selection) +
                                 '&ar_site_name=' + encodeURIComponent(site_name),

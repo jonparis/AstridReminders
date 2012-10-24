@@ -13,17 +13,13 @@ function addActaAction(text,notes,reminder_days) {
 	var notes = notes || "";
 	var reminder_days = reminder_days || 3;
 	var next = jQuery('.acta_action').length;
-	
-	jQuery('.acta_remove_action').hide();
-	
+		
 	var html = '';
 	html += '<li id="acta_actions_' + next + '" class="acta_action">';
 	html += '<div class="acta_action_header">';
 	html += '<label for="acta_actions[' + next + ']">Action Item</label>';
 	
-	if (next > 0) {
-		html += '<a class="acta_remove_action" onclick="return removeActaAction(this);">Remove</a>';
-	}
+	html += '<a class="acta_remove_action" onclick="return removeActaAction(this);">Remove</a>';
 	
 	html += '</div>';
 	html += '<div class="acta_action_field">';
@@ -77,11 +73,11 @@ function removeActaAction(e) {
 
 function astrid_popover_size(){
 	jQuery(".astrid-reminder-link").click(function() {
-		var DEFAULT_POPUP_WIDTH = 600;
-		var DEFAULT_POPUP_HEIGHT = 535;
-		var l = window.screenX + (window.outerWidth - DEFAULT_POPUP_WIDTH) / 2;
-		var t = window.screenY + (window.outerHeight - DEFAULT_POPUP_HEIGHT) / 3;
-		window.open(this.href, "_blank", "width="+DEFAULT_POPUP_WIDTH+", height="+DEFAULT_POPUP_HEIGHT+", top="+t+", left="+l+", toolbar=1, resizable=0");
+		var DEFAULT_POPUP_WIDTH = 2600;
+		var DEFAULT_POPUP_HEIGHT = 2535;
+		var l = DEFAULT_POPUP_WIDTH;//window.screenX + (window.outerWidth - DEFAULT_POPUP_WIDTH) / 2;
+		var t = DEFAULT_POPUP_HEIGHT;//window.screenY + (window.outerHeight - DEFAULT_POPUP_HEIGHT) / 3;
+		window.open(this.href, "_blank", "width="+DEFAULT_POPUP_WIDTH+", height="+DEFAULT_POPUP_HEIGHT);
 		return false;
 	});
 }

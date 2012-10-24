@@ -141,7 +141,7 @@ class AstridCTA {
 					if (!$action['text'])
 						continue;
 					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/new?title=' . self::encodeURIComponent($action['text']);
+					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/tasks/remind_me?title=' . self::encodeURIComponent($action['text']);
 					$content .= '&due_in_days=' . $action['reminder_days'];
 					$content .= '&notes='.self::encodeURIComponent($action['notes']);
 					$content .= '&source_name='.get_the_title();
@@ -225,18 +225,24 @@ function astrid_cta_validate($input) {
 	return $input;
 }
 
-/*** buttons ***/
+/*** Add Astrid RM button and style to visual editor to add/preview inline content ***/
 function add_astrid_reminder_button() {
    if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
      return;
    if ( get_user_option('rich_editing') == 'true') {
      add_filter('mce_external_plugins', 'add_astrid_reminder_tinymce_plugin');
      add_filter('mce_buttons', 'register_astrid_reminder_button');
+     add_filter('mce_css', 'ac_style_for_visual_editor');
    }
 }
 
 add_action('init', 'add_astrid_reminder_button');
 add_shortcode('astridrm', 'addAstridRM');
+
+function ac_style_for_visual_editor($url) {
+  return plugins_url() . '/AstridReminders/astridcta.css';
+}
+
 
 function register_astrid_reminder_button($buttons) {
    array_push($buttons, "|", "astrid_reminder");

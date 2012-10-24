@@ -120,7 +120,6 @@ class AstridCTA {
 	
 	function acta_content_footer( $content ) {
 		global $post;
-		$author_username = get_option("astrid_author_username");
 		if ( is_singular() && is_main_query() ) {
 			$actions = get_post_meta( $post->ID, 'acta_actions', true );
 			if ( $actions && is_array( $actions ) && count( $actions ) > 0 ) {
@@ -144,8 +143,13 @@ class AstridCTA {
 					$content .= '</li>';
 				}
 				$content .= '</ul>';
+				$content .= '<div style="display:none;background-image:url(\'http://astrid.com/widgets/remind_me_t.png\')"></div>';
 				$content .= '</div>';
 			}
+			elseif (strpos($content,"astrid-reminder-link")!== false){
+				$content .= '<div style="display:none;background-image:url(\'http://astrid.com/widgets/remind_me_t.png\')"></div>';
+			}
+
 		}
 
 		return $content;

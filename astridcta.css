@@ -5,7 +5,7 @@
  * 
  * @package   AstridCTA
  * @author    Chris Lema (cflema@gmail.com) and Justin Kussow (jdkussow@gmail.com)
- * @copyright Copyright (c)2011 ALL RIGHTS RESERVED
+ * @copyright Copyright (c)2012 ALL RIGHTS RESERVED
  */
 
 root { 
@@ -123,6 +123,7 @@ root {
 	display: table-cell;
 }
 
+/* button styles borrowed from Twitter Bootstrap defaults and renamed to prevent conflicts */
 .astrid-rm-btn {
 	border-color: #ccc;
 	border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
@@ -245,37 +246,120 @@ root {
           box-shadow: none;
 }
 
-.radio.inline, .checkbox.inline {
-	display: inline-block;
-	padding-top: 5px;
-	margin-bottom: 0;
-	vertical-align: middle;
+/* button style for inline post content and preview */
+a.astrid-rm-btn:link, 
+a.astrid-rm-btn:visited, 
+a.astrid-rm-btn:hover { 
+	text-decoration: none;
 }
 
-.button-size label.inline {
-	vertical-align: top;
+.astrid-rm-btn > .a-chk-span, 
+.astrid-rm-btn:hover > .a-chk-span { 
+	color: #6a9c28; 
+	font-size: 14px; 
+	float: left; 
+	margin-right: 4px; 
 }
 
-a.astrid-rm-btn:link, a.astrid-rm-btn:visited, a.astrid-rm-btn:hover { text-decoration: none }
-.astrid-rm-btn > .a-chk-span, .astrid-rm-btn:hover > .a-chk-span { color: #6a9c28; font-size: 14px; float: left; margin-right: 4px }
-.astrid-reminder-link > .a-chk-span { display: none }
-.astrid-rm-btn.a-icn.a-mini { padding-left:25px; background-image: url('images/astrid_btn_mini.png'); background-position: 2px 0px }
-.astrid-rm-btn.a-mini.a-chk .a-chk-span { font-size:14px; width: 14px; display:block }
-.astrid-rm-btn.a-icn.a-small { padding-left:35px; background-image: url('images/astrid_btn_small.png'); background-position: 3px 1px  }
-.astrid-rm-btn.a-small.a-chk .a-chk-span { font-size:18px; width: 18px; display:block }
-.astrid-rm-btn.a-icn.a-large { padding-left:45px; background-image: url('images/astrid_btn_large.png'); background-position: 4px 2px  }
-.astrid-rm-btn.a-large.a-chk .a-chk-span { font-size:22px; margin-top:-4px; width: 22px; display:block }
+.astrid-reminder-link > .a-chk-span { 
+	display: none;
+}
+
+.astrid-rm-btn.a-icn.a-mini { 
+	padding-left:25px; 
+	background-image: url('images/astrid_btn_mini.png'); 
+	background-position: 2px 0px;
+}
+
+.astrid-rm-btn.a-mini.a-chk .a-chk-span { 
+	font-size:14px; 
+	width: 14px; 
+	display:block;
+}
+
+.astrid-rm-btn.a-icn.a-small { 
+	padding-left:35px; 
+	background-image: url('images/astrid_btn_small.png'); 
+	background-position: 3px 1px; 
+}
+
+.astrid-rm-btn.a-small.a-chk .a-chk-span { 
+	font-size:18px; 
+	width: 18px; 
+	display:block;
+}
+
+.astrid-rm-btn.a-icn.a-large { 
+	padding-left:45px; 
+	background-image: url('images/astrid_btn_large.png'); 
+	background-position: 4px 2px; 
+
+}
+.astrid-rm-btn.a-large.a-chk .a-chk-span { 
+	font-size:22px; 
+	margin-top:-4px; 
+	width: 22px; 
+	display:block; 
+}
 
 /* Astrid Get-Link page */
-.a_gl_page #ar_due_in_days { width: 20px }
-.a_gl_page.forceColors a.learn-more, .a_gl_page .control-hint a:link, .a_gl_page .control-hint a:visited  { color: #08c}
-.a_gl_page .control-hint { width: 180px; margin-left: 10px; font-size: 13px; display: inline-block }
-.a_gl_page .control-hint h4 { margin-top: 20px; margin-bottom: 10px}
-.a_gl_page .button-size, .a_gl_page .button-style, .a_gl_page .link-or-button { display:inline }
-.a_gl_page .button-style label.inline { white-space:nowrap; padding-right: 30px }
-.a_gl_page .button-style label.inline img { border:none; width:24px; margin:0 }
-.a_gl_page .button-size label.inline { vertical-align:top }
-.a_gl_page .button-size label.inline input[type="radio"] { margin:0 auto;width:30px }
-.a_gl_page #ar_notes { height:70px; font-size: 14px }
-.a_gl_page #ar_title, .a_gl_page #ar_notes { width: 330px }
-.a_gl_page textarea {font-size: 14px }
+.a_gl_page #ar_due_in_days { 
+	width: 20px;
+}
+
+.a_gl_page.forceColors a.learn-more, 
+.a_gl_page .control-hint a:link, 
+.a_gl_page .control-hint a:visited  { 
+	color: #08c;
+}
+
+.a_gl_page .control-hint { 
+	width: 180px; 
+	margin-left: 10px; 
+	font-size: 13px;
+	display: inline-block; 
+}
+
+.a_gl_page .control-hint h4 { 
+	margin-top: 20px; 
+	margin-bottom: 10px;
+}
+
+.a_gl_page .button-size, 
+.a_gl_page .button-style, 
+.a_gl_page .link-or-button { 
+	display:inline; 
+}
+
+.a_gl_page .button-style label.inline { 
+	white-space:nowrap; 
+	padding-right: 30px;
+}
+
+.a_gl_page .button-style label.inline img { 
+	border:none; 
+	width:24px; 
+	margin:0; 
+}
+
+.a_gl_page .button-size label.inline { 
+	vertical-align:top; 
+}
+
+.a_gl_page .button-size label.inline input[type="radio"] { 
+	margin:0 auto;
+	width:30px 
+}
+
+.a_gl_page #ar_notes { 
+	font-size: 14px; 
+}
+
+.a_gl_page #ar_title, 
+.a_gl_page #ar_notes { 
+	width: 330px; 
+}
+
+.a_gl_page textarea { 
+	font-size: 14px; 
+}

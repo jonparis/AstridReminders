@@ -1,11 +1,15 @@
 <?php
-/*
-Plugin Name: Astrid Call-To-Action Reminders
-Description: A WordPress plugin that lets bloggers create Astrid Call-to-Action reminders with-in and at the bottom of each post
-Version: 0.4
-Author: Chris Lema (cflema@gmail.com) with Justin Kussow (jdkussow@gmail.com) using Custom Meta Box code from others.
-License: GPLv2
-*/
+/**
+ * AstridCTA JS
+ *
+ * PHP version 5
+ * 
+ * @package   AstridCTA
+ * @author    Chris Lema (cflema@gmail.com) and Justin Kussow (jdkussow@gmail.com)
+ * @copyright Copyright (c)2012 ALL RIGHTS RESERVED
+ */
+
+define("ASTRID_RM_VERSION", "0.5");
 
 function decodeURIComponent($str) {
 	$revert = array('!'=>'%21', '*'=>'%2A', "'"=>'%27', '('=>'%28', ')'=>'%29');
@@ -23,10 +27,10 @@ foreach ($_GET as $key => $value){
 ?><!DOCTYPE html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" />
-		<link rel="stylesheet" type="text/css" href="../astridcta.css?2" />
+		<link rel="stylesheet" type="text/css" href="../astridcta.css?<?php echo ASTRID_RM_VERSION; ?>" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="../../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
-		<script type="text/javascript" src="../astridcta.js?2"></script>
+		<script type="text/javascript" src="../astridcta.js?<?php echo ASTRID_RM_VERSION; ?>"></script>
 		<script type="text/javascript">
 			var AstridLink = {
 			  e: '',
@@ -108,14 +112,16 @@ foreach ($_GET as $key => $value){
 			<div class="control-group">
 				<label class="control-label" for="ar_title" title="Title is required">Reminder</label>
 				<div class="controls">
-					<input id="ar_title" name="ar_title" placeholder="Update LinkedIn profile w/tips from <?php echo $ar_site_name; ?>" type="text" value="<?php echo $ar_text_selection; ?>">
+					<textarea id="ar_title" rows="2" name="ar_title" 
+					placeholder="Update LinkedIn profile w/tips from <?php echo $ar_site_name; ?>"
+					><?php echo $ar_text_selection; ?></textarea>
 					(required)
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="notes">Description</label>
+				<label class="control-label" for="notes">Details</label>
 				<div class="controls">
-					<textarea id="ar_notes" rows="3" name="notes" placeholder="Longer description with additional instruction"></textarea>
+					<textarea id="ar_notes" rows="2" name="notes" placeholder="Optional - add links, tips, or other notes."></textarea>
 				</div>
 			</div>
 			<div class="control-group" id="relative_date">
@@ -240,9 +246,9 @@ foreach ($_GET as $key => $value){
 	</form>
 	<hr/>
 	<p>
-		Reminder links help readers remember to act on suggestions. 
+		Remind Me links help readers remember to act on suggestions. 
 		By clicking the links they can quickly add your advice to their to-do lists, 
-		calendar, and will get a reminder via email with a link back to your post.  <a href="http://astrid.com/widgets/create_rm_button" class="learn-more" target="_blank" >Learn more</a>.
+		calendar, and will get a reminder via email with a link back to your post. <a href="http://astrid.com/widgets/create_rm_button" class="learn-more" target="_blank" >Learn more</a>.
 		<br/> 
 	</p>
 </body>

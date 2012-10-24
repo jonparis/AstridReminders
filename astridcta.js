@@ -5,7 +5,7 @@
  * 
  * @package   AstridCTA
  * @author    Chris Lema (cflema@gmail.com) and Justin Kussow (jdkussow@gmail.com)
- * @copyright Copyright (c)2011 ALL RIGHTS RESERVED
+ * @copyright Copyright (c)2012 ALL RIGHTS RESERVED
  */
 
 function addActaAction(text,notes,reminder_days) {

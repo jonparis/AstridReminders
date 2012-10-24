@@ -54,7 +54,7 @@ foreach ($_GET as $key => $value){
 			 	return "http://astrid.com/tasks/remind_me" + AstridLink.url_suffix();
 			  },
 			  preview : function (){
-			  	jQuery("#ar_preview").attr("href", AstridLink.ar_unshortened_url());
+			  	jQuery("#ar_preview").attr("href", "http://astrd.co/QtM5gy");
 			  	return false;
 			  },
 			  insert: function create_reminder_link(e) {
@@ -232,7 +232,7 @@ foreach ($_GET as $key => $value){
 				<div class="controls">
 					<a href="javascript:;" class="btn btn-primary" style="color:white" onclick="AstridLink.insert(AstridLink.e)">Add to Post</a>
 					<div class="control-hint">
-						<a href="" class="astrid-rm-link" id="ar_preview" onmouseover="AstridLink.preview(this)">Preview</a>
+						<a href="" class="astrid-reminder-link" target="_blank" id="ar_preview" onmouseover="AstridLink.preview(this)">Preview</a>
 					</div>
 				</div>
 			</div>
@@ -243,7 +243,7 @@ foreach ($_GET as $key => $value){
 		Reminder links help readers remember to act on suggestions. 
 		By clicking the links they can quickly add your advice to their to-do lists, 
 		calendar, and will get a reminder via email with a link back to your post.  <a href="http://astrid.com/widgets/create_rm_button" class="learn-more" target="_blank" >Learn more</a>.
-		<br/><a href="http://astrd.co/QtM5gy" class="astrid-reminder-link astrid-rm-btn a-small a-chk" target="_blank"><span class="a-chk-span">✓</span> Example Button</a> 
+		<br/> 
 	</p>
 </body>
 </html>

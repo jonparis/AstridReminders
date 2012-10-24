@@ -1,11 +1,11 @@
 <?php
 /**
- * AstridCTA JS
+ * AstridReminders JS
  *
  * PHP version 5
  * 
- * @package   AstridCTA
- * @author    Chris Lema (cflema@gmail.com) and Justin Kussow (jdkussow@gmail.com)
+ * @package   AstridReminders
+ * @author    Jon Paris (jon@astrid.com), Chris Lema (cflema@gmail.com), and Justin Kussow (jdkussow@gmail.com)
  * @copyright Copyright (c)2012 ALL RIGHTS RESERVED
  */
 

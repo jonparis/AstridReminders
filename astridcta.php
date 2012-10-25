@@ -127,27 +127,31 @@ class AstridCTA {
 		if ( is_singular() && is_main_query() ) {
 			$actions = get_post_meta( $post->ID, 'acta_actions', true );
 			if ( $actions && is_array( $actions ) && count( $actions ) > 0 ) {
-				$content .= '<div id="acta_actions_fe">';
-				$content .= '<h2>' . get_astrid_cta_option('header') . '</h2>';
-				$content .= '<p>' . get_astrid_cta_option('description') .'</p>';
-				$content .= '<ul>';
+				$cta_section = '<div id="acta_actions_fe">';
+				$cta_section .= '<h2>' . get_astrid_cta_option('header') . '</h2>';
+				$cta_section .= '<p>' . get_astrid_cta_option('description') .'</p>';
+				$cta_section .= '<ul>';
 				$siteurl = get_site_url();
-				$step = 0; 
+				$step = 0;
+				$cta_list = ''; 
 				foreach( $actions as $action ) { 
 					$step += 1;
 					if (!$action['text'])
 						continue;
-					$content .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
-					$content .= '<a class= "astrid-reminder-link" href="http://astrid.com/tasks/remind_me?title=' . self::encodeURIComponent($action['text']);
-					$content .= '&due_in_days=' . $action['reminder_days'];
-					$content .= '&notes='.self::encodeURIComponent($action['notes']);
-					$content .= '&source_name='.get_the_title();
-					$content .= '&source_url='.post_permalink();
-					$content .= '" target="_blank"><span class="a-chk-span">&#x2713;</span> &#x2713; ' . $action['text'] . '</a>';
-					$content .= '</li>';
+					$cta_list .= '<li id="acta_action_fe_' . $step . '" class="acta_action_fe">';
+					$cta_list .= '<a class= "astrid-reminder-link" href="http://astrid.com/tasks/remind_me?title=' . self::encodeURIComponent($action['text']);
+					$cta_list .= '&due_in_days=' . $action['reminder_days'];
+					$cta_list .= '&notes='.self::encodeURIComponent($action['notes']);
+					$cta_list .= '&source_name='.get_the_title();
+					$cta_list .= '&source_url='.post_permalink();
+					$cta_list .= '" target="_blank"><span class="a-chk-span">&#x2713;</span> &#x2713; ' . $action['text'] . '</a>';
+					$cta_list .= '</li>';
 				}
-				$content .= '</ul>';
-				$content .= '</div>';
+				$cta_section .= $cta_list;
+				$cta_section .= '</ul>';
+				$cta_section .= '</div>';
+				if ($cta_list)
+					$content .= $cta_section;
 			}
 		}
 

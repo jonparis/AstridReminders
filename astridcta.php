@@ -24,7 +24,6 @@ class AstridCTA {
 		
 		add_action( 'cmd_validate_acta_action', array( &$this, 'validate_acta_action' ), 10, 3 );
 		
-		//add_action( 'wp_footer', array( &$this, 'acta_footer_actions' ), 100 );
 		add_action( 'the_content', array( &$this, 'acta_content_footer' ), 100 );
 	}
 	
@@ -68,9 +67,14 @@ class AstridCTA {
 	function print_scripts() {
 		wp_register_script( 'astridcta', ACTA_URL . 'astridcta.js', array( 'jquery' ), '1.0' );
 		wp_enqueue_script( 'astridcta' );
-
+		if ( is_singular() && is_main_query() ){
+			wp_register_script('astrid_post_loaded', ACTA_URL . 'astrid_post_loaded.js', array('jquery'), '1.0' );
+			wp_enqueue_script( 'astrid_post_loaded' );
+		}
 		wp_register_style( 'astridcta', ACTA_URL . 'astridcta.css' );
 		wp_enqueue_style( 'astridcta' );
+
+
 	}
 
 	function encodeURIComponent($str) {
@@ -143,13 +147,8 @@ class AstridCTA {
 					$content .= '</li>';
 				}
 				$content .= '</ul>';
-				$content .= '<div style="display:none;background-image:url(\'http://astrid.com/widgets/remind_me_t.png\')"></div>';
 				$content .= '</div>';
 			}
-			elseif (strpos($content,"astrid-reminder-link")!== false){
-				$content .= '<div style="display:none;background-image:url(\'http://astrid.com/widgets/remind_me_t.png\')"></div>';
-			}
-
 		}
 
 		return $content;
@@ -180,17 +179,15 @@ function get_astrid_cta_option($option) {
 	return stripslashes($option_return);
 }
 
-// Init plugin options to white list our options
 function astrid_cta_init(){
 	register_setting( 'astrid_cta_options', 'astrid_cta', 'astrid_cta_validate' );
 }
 
-// Add menu page
 function astrid_cta_add_page() {
 	add_options_page('Astrid Calls To Action', 'Astrid Calls-to-Action', 'manage_options', 'astrid_cta', 'astrid_cta_do_page');
 }
 
-// Draw the menu page itself
+// Draw menu page
 function astrid_cta_do_page() {
 	?>
 	<div class="wrap">

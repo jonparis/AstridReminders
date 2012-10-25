@@ -69,5 +69,4 @@ function astrid_popover_size(){
 	});
 }
 
-
 window.addEventListener("load", astrid_popover_size, false); 

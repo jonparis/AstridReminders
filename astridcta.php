@@ -67,7 +67,7 @@ class AstridCTA {
 	function print_scripts() {
 		wp_register_script( 'astridcta', ACTA_URL . 'astridcta.js', array( 'jquery' ), '1.0' );
 		wp_enqueue_script( 'astridcta' );
-		if ( is_singular() && is_main_query() ){
+		if ( is_singular() && is_main_query() && get_astrid_cta_option('collect_statistics')){
 			wp_register_script('astrid_post_loaded', ACTA_URL . 'astrid_post_loaded.js', array('jquery'), '1.0' );
 			wp_enqueue_script( 'astrid_post_loaded' );
 		}
@@ -196,15 +196,20 @@ function astrid_cta_do_page() {
 	?>
 	<div class="wrap">
 		<h2>Astrid Calls-To-Action</h2>
-		<form method="post" action="">
+		<form method="post" action="options.php">
 			<?php settings_fields('astrid_cta_options'); ?>
 		</p>
-			<table class="form-table">
-				<tr valign="top"><th scope="row">CTA Header</th>
-					<td><input name="astrid_cta[header]" type="text" value="<?php echo get_astrid_cta_option('header'); ?>" /></td>
+			<table class="form-table acta_action_fieid">
+				<tr valign="top"><th scope="row">Call-To-Action Header</th>
+					<td><input class="admin_input" name="astrid_cta[header]" type="text" value="<?php echo get_astrid_cta_option('header'); ?>" /></td>
 				</tr>
 				<tr valign="top"><th scope="row">Description</th>
-					<td><textarea name="astrid_cta[description]" rows="3"><?php echo get_astrid_cta_option('description'); ?></textarea></td>
+					<td><textarea class="admin_input" name="astrid_cta[description]" rows="3"><?php echo get_astrid_cta_option('description'); ?></textarea></td>
+				</tr>
+				<tr valign="top"><th scope="row">Collect Statistics</th>
+					<td><input type="checkbox" name="astrid_cta[collect_statistics]" 
+						<?php if (get_astrid_cta_option('collect_statistics')) echo "checked='checked'"; ?>
+						value="true" /> statistics show the # of people who add reminders complete suggestions.</td>
 				</tr>
 			</table>
 			<p class="submit">
@@ -220,7 +225,7 @@ function astrid_cta_validate($input) {
 	// Say our second option must be safe text with no HTML tags
 	$input['header'] =  wp_filter_nohtml_kses($input['header']);
 	$input['description'] =  addslashes($input['description']);
-	
+	$input['collect_statistics'] = ($input['collect_statistics']) ? 1 : 0;
 	return $input;
 }
 

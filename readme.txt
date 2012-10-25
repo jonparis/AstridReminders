@@ -47,7 +47,22 @@ Remind Me Buttons are identical to Remind Me links but appear as a button. There
 ### Call-to-Action Reminders
 Astrid Call-to-Action are probably the easiest way to help readers act on a post. Add the Call-To-Action at the bottom of each post as a quick way to summarize the next steps readers can take.
 
-Enjoy!
+### Use of Astrid.com Services
+
+## url shortener
+When adding a Remind Me button to your post Astrid will send the reminder to Astrid.com to create a custom short code url.
+eg http://astrd.co/QtM5gy 
+The short code provides a simple metric as to how many clicks your link has generated. You can view how many clicks on the shortcode by adding a plus "+" to the end of the url.
+eg http://astrd.co/QtM5gy+
+
+## tracking metrics by blog posts including Remind Me buttons
+This plugin also counts how many readers have viewed your post that has included Remind Me links and Call-To-Actions.
+This is not a replacement for Jetpack by WordPress, Google Analytics, or other ways to monitor your site traffic. It does provide anonymous
+user statistics so with a plugin update you will be able to see how many readers intend to act and what percentage are 
+successfully completing your suggestions. At this time, no account creation is required. 
+
+No statistics are recorded or information is sent to Astrid.com for posts that do not inlcude Call-To-Actions or Remind Me links.
+
 
 == Installation ==
 

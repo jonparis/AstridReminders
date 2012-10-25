@@ -51,6 +51,8 @@ root {
 	display: table-cell;
 }
 
+.acta_action_fieid textarea.admin_input,
+.acta_action_fieid input[type=text].admin_input,
 .acta_action_field textarea.acta_action_description,
 .acta_action_field input[type=text].acta_action_text,
 .acta_action_field input[type=text].acta_action_reminder_days {
